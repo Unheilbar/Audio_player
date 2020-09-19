@@ -31,8 +31,9 @@
   color:white;
   height:15px;
   width:15px;
-  background-color:red;
+  background-color:green;
   margin-left:10px;
+  border-radius: 100%;
 }
 
 

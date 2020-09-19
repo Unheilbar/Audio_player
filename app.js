@@ -1,5 +1,54 @@
 const filler = document.getElementById('filler')
 const start = document.getElementById('play')
+const defaultTrackUrl = "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview113/v4/5e/2f/80/5e2f8029-d77b-d097-08f5-b7ee25c57ff3/mzaf_2579071016942610640.plus.aac.p.m4a"
+const srcInput = document.getElementById('src__input')
+
+
+const testUrl = 'https://itunes.apple.com/search?term=billie_eilish'
+
+function getRequestUrl(text) {
+  text.split(' ').join('_')
+  return 'https://itunes.apple.com/search?term='+text
+}
+
+function sendRequest(url) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest
+    
+    xhr.open('GET', url)
+
+    xhr.responseType = 'json'
+
+    xhr.onload = () => {
+      if(xhr.status >=400) {
+        reject(xhr.response)
+      } else {
+        resolve(xhr.response)
+      }
+    }
+
+    xhr.send()
+  })
+}
+
+const getTrackPreviewUrl = data => {
+  return data.results[0].previewUrl
+}
+
+start.onclick = () => {
+  if(srcInput.value!=''){
+    console.log(srcInput.value)
+    const url = getRequestUrl(srcInput.value)
+    srcInput.value = ''
+    sendRequest(testUrl).then(data => {
+      const src = getTrackPreviewUrl(data)
+      play(src)
+    }).catch(e => {
+      console.log(e)
+      play(defaultTrackUrl)
+    })
+  }  
+}
 
 const comeOn = (audio) => {
     const audioCtx = new AudioContext()
@@ -49,9 +98,6 @@ canvas.height = 200
 var   WIDTH = canvas.width;
 var   HEIGHT = canvas.height;
 
-
-
-const src = 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview118/v4/94/25/9c/94259c23-84ee-129d-709c-577186cbe211/mzaf_5653537699505456197.plus.aac.p.m4a'
 function play(src){
   let audio = new Audio()
   audio.crossOrigin = "anonymous"
@@ -61,10 +107,6 @@ function play(src){
   audio.volume = 0.2
   comeOn(audio)
   playerAnimation(Date.now() + 30000)
-}
-
-start.onclick = () => {
-  play(src)
 }
 
 function playerAnimation(endTime) {
