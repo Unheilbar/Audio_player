@@ -1,18 +1,12 @@
-let audio
 const filler = document.getElementById('filler')
 const start = document.getElementById('play')
 
-audio = new Audio()
-audio.crossOrigin = "anonymous"
-let source
-const comeOn = () => {
+const comeOn = (audio) => {
     const audioCtx = new AudioContext()
     let analyser = audioCtx.createAnalyser()
-    if(source == undefined) {
-      source = audioCtx.createMediaElementSource(audio)
-      source.connect(audioCtx.destination) 
-      source.connect(analyser)     
-    }    
+    const source = audioCtx.createMediaElementSource(audio)
+    source.connect(audioCtx.destination) 
+    source.connect(analyser)      
     
     analyser.fftSize = 256;
     let bufferLengthAlt = analyser.frequencyBinCount;
@@ -58,17 +52,19 @@ var   HEIGHT = canvas.height;
 
 
 const src = 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview118/v4/94/25/9c/94259c23-84ee-129d-709c-577186cbe211/mzaf_5653537699505456197.plus.aac.p.m4a'
-function play(src, audio){
+function play(src){
+  let audio = new Audio()
+  audio.crossOrigin = "anonymous"
   audio.src = src
   audio.play()
   audio.preload = 'auto'
   audio.volume = 0.2
-  comeOn()
+  comeOn(audio)
   playerAnimation(Date.now() + 30000)
 }
 
 start.onclick = () => {
-  play(src, audio)
+  play(src)
 }
 
 function playerAnimation(endTime) {
