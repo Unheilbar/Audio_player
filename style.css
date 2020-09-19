@@ -1,0 +1,46 @@
+* {
+  background-color:#0b0c10
+}
+
+.player{
+  display:flex;
+  align-items:center;
+  margin:auto;
+  margin-top:100px;
+  width:400px;
+}
+
+#oscilloscope{
+  background:transparent;
+  margin-left:-150px;
+}
+
+.statusbar {
+  background-color:#45a29e;
+  width:300px;
+  height:10px;
+  margin:0;
+}
+
+.statusbar__filler {
+  width:0%;
+  height:100%;
+  background-color:#66fcf1;
+}
+
+.testing{
+  color:white;
+  margin:auto;
+  width:100px;
+  margin-top:100px;
+}
+
+#play {
+  width:100px;
+  height:100px;
+  color:white;
+  height:15px;
+  width:15px;
+  background-color:red;
+  margin-right:10px;
+}
