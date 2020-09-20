@@ -62,9 +62,12 @@ const comeOn = (audio) => {
     let dataArrayAlt = new Uint8Array(bufferLengthAlt);
     analyser.getByteTimeDomainData(dataArrayAlt);
     console.log(dataArrayAlt)
-
-    const drawAlt = function() {
+    const startTime = Date.now()
+    const drawAlt = function() {     
       drawVisual = requestAnimationFrame(drawAlt);
+      if(Date.now() - startTime > 31000) {
+        cancelAnimationFrame(drawVisual)
+      }
       analyser.getByteFrequencyData(dataArrayAlt);
       canvasCtx.fillStyle = 'rgb(0, 0, 0)';
       canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -72,7 +75,9 @@ const comeOn = (audio) => {
       var barWidth = (WIDTH / bufferLengthAlt)-4;
       var barHeight;
       var x = 0;
+      console.log('there')
       for(var i = 0; i < bufferLengthAlt; i++) {
+        
         barHeight = dataArrayAlt[i];
         canvasCtx.shadowBlur = barHeight*0.2;
         canvasCtx.shadowColor = `rgb(${69+barHeight/5},${162+barHeight/2},${158+barHeight/2})`;
