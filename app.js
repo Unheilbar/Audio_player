@@ -40,7 +40,7 @@ start.onclick = () => {
     console.log(srcInput.value)
     const url = getRequestUrl(srcInput.value)
     srcInput.value = ''
-    sendRequest(testUrl).then(data => {
+    sendRequest(url).then(data => {
       const src = getTrackPreviewUrl(data)
       play(src)
     }).catch(e => {
@@ -56,29 +56,29 @@ const comeOn = (audio) => {
     const source = audioCtx.createMediaElementSource(audio)
     source.connect(audioCtx.destination) 
     source.connect(analyser)      
-    
+    console.log(audioCtx.getOutputTimestamp())
     analyser.fftSize = 256;
     let bufferLengthAlt = analyser.frequencyBinCount;
     let dataArrayAlt = new Uint8Array(bufferLengthAlt);
     analyser.getByteTimeDomainData(dataArrayAlt);
+    console.log(dataArrayAlt)
 
     const drawAlt = function() {
       drawVisual = requestAnimationFrame(drawAlt);
-  
       analyser.getByteFrequencyData(dataArrayAlt);
-  
       canvasCtx.fillStyle = 'rgb(0, 0, 0)';
       canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-      canvasCtx.clearRect(0,0, WIDTH, HEIGHT)
-      var barWidth = (WIDTH / bufferLengthAlt) * 2.5;
+      canvasCtx.clearRect(0,0, WIDTH, HEIGHT);
+      var barWidth = (WIDTH / bufferLengthAlt)-4;
       var barHeight;
       var x = 0;
       for(var i = 0; i < bufferLengthAlt; i++) {
         barHeight = dataArrayAlt[i];
-  
-        canvasCtx.fillStyle = `rgba(${69+barHeight/3.72},${162+barHeight/1.36},${158+barHeight/1.48}, ${barHeight/150})`;
-        canvasCtx.fillRect(x+i*10,100,barWidth,barHeight/4)      
-        canvasCtx.fillRect(x+i*10,100,barWidth,-barHeight/4)
+        canvasCtx.shadowBlur = barHeight*0.2;
+        canvasCtx.shadowColor = `rgb(${69+barHeight/5},${162+barHeight/2},${158+barHeight/2})`;
+        canvasCtx.fillStyle = `rgba(${69+barHeight/5},${162+barHeight/2},${158+barHeight/2}, ${barHeight/150})`;
+        canvasCtx.fillRect(x,100,barWidth,barHeight/5-70/(i+1))      
+        canvasCtx.fillRect(x,100,barWidth,-barHeight/5+70/(i+1))
         x += barWidth + 1;
       }
     }
@@ -92,8 +92,8 @@ var canvas = document.getElementById("oscilloscope");
 var canvasCtx = canvas.getContext("2d");
 
 // draw an oscilloscope of the current audio source
-canvas.width = 600
-canvas.height = 200
+canvas.width = 1000
+canvas.height = 300
 
 var   WIDTH = canvas.width;
 var   HEIGHT = canvas.height;
@@ -112,8 +112,6 @@ function play(src){
 function playerAnimation(endTime) {
   const step = () => {
       let milLeft = endTime - Date.now()
-      console.log(milLeft)
-      let secLeft = milLeft / 1000
       if(milLeft<50) {
         return clearInterval(timer)
       }
